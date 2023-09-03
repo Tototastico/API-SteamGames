@@ -4,11 +4,6 @@ import numpy as np
 #from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
 #from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
 
-# Procedemos a leer nuestros archivos ubicados al mismo nivel del main por problemas en el deploy
-df_games = pd.read_parquet('clean_games.parquet.gzip')
-df_items = pd.read_parquet('clean_items.parquet.gzip')
-df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
-
 app = FastAPI() # Instanciamos nuestra api
 
 # Ahora procedemos a crear un marcador para cada funcion, con su respectiva ruta
@@ -17,6 +12,8 @@ app = FastAPI() # Instanciamos nuestra api
 
 @app.get('/userdata/{User_id}') # Creamos nuestro marcador con la ruta del mismo nombre que la funcion
 def userdata(User_id: str):
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
+    df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def userdata( User_id : str ): Debe devolver cantidad de dinero gastado por el usuario,
     #el porcentaje de recomendación en base a reviews.recommend y cantidad de items.
     user_games = df_items[df_items['user_id'] == User_id]['item_id'] # Extraemos los juegos que tiene nuestro usuario
@@ -39,6 +36,7 @@ def userdata(User_id: str):
 
 @app.get('/countreviews/{fecha_inicio},{fecha_fin}') # Aca separamos nuestros parametros en la ruta con una ','
 def countreviews(fecha_inicio:str, fecha_fin:str):
+    df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def countreviews( YYYY-MM-DD y YYYY-MM-DD : str ): Cantidad de usuarios que realizaron reviews entre las fechas dadas
     #y, el porcentaje de recomendación de los mismos en base a reviews.recommend.
     users = df_reviews[(df_reviews['posted'] >= fecha_inicio) &
@@ -55,6 +53,8 @@ def countreviews(fecha_inicio:str, fecha_fin:str):
 
 @app.get('/genre/{genero}')
 def genre(genero: str): # Esta funcion es a que mas se demora
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
+    df_items = pd.read_parquet('clean_items.parquet.gzip')
     #def genre( género : str ): Devuelve el puesto en el que se encuentra un género
     #sobre el ranking de los mismos analizado bajo la columna PlayTimeForever.
     generos_unicos = df_games['genres'].unique() # Extraemos nuestros generos unicos
@@ -69,6 +69,8 @@ def genre(genero: str): # Esta funcion es a que mas se demora
  
 @app.get('/userforgenre/{genero}')
 def userforgenre(genero: str):
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
+    df_items = pd.read_parquet('clean_items.parquet.gzip')
     #def userforgenre( género : str ): Top 5 de usuarios con más horas de juego en el género dado,
     #con su URL (del user) y user_id.
     genre_hours = df_items.merge(df_games, left_on='item_id', right_on='id') # Unimos los datasets de items y juegos
@@ -83,6 +85,7 @@ def userforgenre(genero: str):
 
 @app.get('/developer/{company_name}')
 def developer(company_name: str):
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
     #def developer( desarrollador : str ): Cantidad de items y porcentaje
     # de contenido Free por año según empresa desarrolladora.
     frees = df_games[(df_games.publisher == company_name) & ((df_games.price == 0) | df_games.price.isnull())].drop_duplicates(subset=['id'])
@@ -99,6 +102,7 @@ def developer(company_name: str):
 
 @app.get('/sentiment_analysis/{year}')
 def sentiment_analysis(year: int):
+    df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def sentiment_analysis( año : int ): Según el año de lanzamiento,
     #se devuelve una lista con la cantidad de registros de reseñas de usuarios
     # que se encuentren categorizados con un análisis de sentimiento.
@@ -110,6 +114,7 @@ def sentiment_analysis(year: int):
 
 @app.get('/recomendacion_juego/{id_de_producto}')
 def recomendacion_juego(id_del_producto: str):
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
     #def recomendacion_juego( id de producto ): Ingresando el id de producto,
     # deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
     from recommendation import cosine_sim
