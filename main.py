@@ -108,8 +108,18 @@ def sentiment_analysis(year: str):
     #def sentiment_analysis( año : int ): Según el año de lanzamiento,
     #se devuelve una lista con la cantidad de registros de reseñas de usuarios
     # que se encuentren categorizados con un análisis de sentimiento.
-    df = df_reviews.copy() # Creamos una copia de nuestras reseñas
-    year_data = df[df['year'] == year] # Coseguimos los datos de nuestro año
+    # Creamos una funcion que extrae el año de las fechas en las que puede hacerlo
+    def extract_year(date_str):
+        date_str = str(date_str)
+        year_match = re.search(r'\d{4}', date_str)
+        if year_match:
+            return str(year_match.group())
+        else:
+            return None
+
+# Aplicar la función a la columna release_date y creamos una nueva columna año con nuestros años restaurados
+    df_reviews['year'] = df_reviews['posted'].apply(lambda x: extract_year(x))
+    year_data = df_reviews[df_reviews['year'] == year] # Coseguimos los datos de nuestro año
     sentiment_mapping = {0: 'Negative', 1: 'Neutral', 2: 'Positive'} # Mapeamos los sentimientos con su respectiva palabra
     sentiment_counts = year_data['sentiment_analysis'].map(sentiment_mapping).value_counts().to_dict() # Contamos esos sentimientos
     return sentiment_counts # Y los retornamos
