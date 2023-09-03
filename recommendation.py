@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer # Importamos nuestro CountVectorizer de sklearn
 from sklearn.metrics.pairwise import cosine_similarity # Y nuestro coseno de simil
 df_games = pd.read_parquet('clean_games.parquet.gzip') # Leemos nuestros juegos
-games = df_games # Hacemos una copia
+games = df_games.sample(frac=0.1, random_state=42) #Reducimos el dataset por un problema de rendimiento
 
 generos_a_excluir = [ # Creamos una lista de los generos menos vistos en el dataset, esto lo hacemos para reducir el tamaño
                       # del dataset por motivos de rendimiento, aunque por el otro lado perdemos precision en nuestro modelo

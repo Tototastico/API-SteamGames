@@ -11,8 +11,8 @@ app = FastAPI() # Instanciamos nuestra api
 # Ademas de crear las funciones aca mismo, previamente habian sido creadas en un archivo funciones.ipynb
 # Pero decidi moverlas directamente aca en vez de importarlas.
 
-df_reviews = pd.read_parquet('clean_reviews_functions.parquet.gzip')
-df_games = pd.read_parquet('clean_games_functions.parquet.gzip')
+df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
+df_games = pd.read_parquet('clean_games.parquet.gzip')
 df_items = pd.read_parquet('clean_items_functions.parquet.gzip')
 
 @app.get('/userdata/{User_id}')
