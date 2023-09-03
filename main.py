@@ -14,6 +14,7 @@ app = FastAPI() # Instanciamos nuestra api
 def userdata(User_id: str):
     df_games = pd.read_parquet('clean_games.parquet.gzip')
     df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
+    df_items = pd.read_parquet('clean_items.parquet.gzip')
     #def userdata( User_id : str ): Debe devolver cantidad de dinero gastado por el usuario,
     #el porcentaje de recomendación en base a reviews.recommend y cantidad de items.
     user_games = df_items[df_items['user_id'] == User_id]['item_id'] # Extraemos los juegos que tiene nuestro usuario
