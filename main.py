@@ -126,3 +126,15 @@ def recomendacion_juego(id_del_producto: str):
     indices = [index for index, _ in recommended_items[1:10]] # Extraemos los indices de los juegos
     recommended_items = df_games.iloc[indices]['id'].tolist() # Convertimos a listas con nuestros ids, (podriamos poner nuestros app_name)
     return recommended_items # Retornamos
+
+@app.get('/sentiment_analysis2/{year}')
+def sentiment_analysis2(year: str):
+    df_games = pd.read_parquet('clean_games.parquet.gzip')
+    df_games.dropna(subset=['year'], inplace=True)
+    df_games['year'] = df_games['year'].astype(int)
+    year = int(year)
+    df_sa = df_games.copy()
+    year_data = df_sa[df_sa['year'] == year]
+    mapeo = {0: 'Negative', 1: 'Neutral', 2: 'Positive'}
+    sentiment = anio_data['sentiment_analysis'].map(mapeo).value_counts().to_dict()
+    return sentiment
