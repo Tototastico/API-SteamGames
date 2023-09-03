@@ -28,11 +28,11 @@ def userdata(User_id: str):
     total_amount = round(total_amount,2) # Lo redondeamos y ya tenemos el primer punto hecho
     total_games = df_items.loc[df_items['user_id'] == User_id, 'items_count'].tolist()[0] # Ubicamos los juegos totales del usuario
     user_recomendations = df_reviews[df_reviews['user_id'] == User_id]['recommend'].tolist() # Y extraemos cuantas recomendaciones tiene
-    user_recomendations = len(user_recomendations) # Extraemos la cantidad (Si pusiesemos sum() en vez de len(), 
+    user_recomendations = sum(user_recomendations) # Extraemos la cantidad (Si pusiesemos sum() en vez de len(), 
                                                     # Extraeriamos solamente las recomendaciones positivas de nuestros juegos)
                                                     # Pero mi interpretacion de la consigna fue que eran todas las recomendaciones,
                                                     #Sin importar si eran positivas o negativas
-    percentage = user_recomendations/total_games # Creamos nuestro porcentaje de recomendaciones
+    percentage = user_recomendations/len(total_games) # Creamos nuestro porcentaje de recomendaciones
     return f'{total_amount}, {round(percentage*100,2)}%' # Y lo retornamos
 
 @app.get('/countreviews/{fecha_inicio},{fecha_fin}') # Aca separamos nuestros parametros en la ruta con una ','
