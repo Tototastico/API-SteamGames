@@ -119,5 +119,5 @@ def recomendacion_juego(id_del_producto: str):
     recommended_items = df_games.iloc[indices]['id'].tolist() # Convertimos a listas con nuestros ids, (podriamos poner nuestros app_name)
     recomedations = ""
     for i in recommended_items[:5]:
-        recomedations+='<p>{i}</p>'
+        recomedations+=f'<p>{i}</p>'
     return recomedations # Retornamos los primeros 5
