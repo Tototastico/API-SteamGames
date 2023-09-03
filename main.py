@@ -5,9 +5,9 @@ from fastapi.responses import HTMLResponse
 from recommendation import cosine_sim
 #pip intall fastparquet
 
-df_games = pd.read_parquet('src/data/clean_games.parquet.gzip')
-df_items = pd.read_parquet('src/data/clean_items.parquet.gzip')
-df_reviews = pd.read_parquet('src/data/clean_reviews.parquet.gzip')
+df_games = pd.read_parquet('clean_games.parquet.gzip')
+df_items = pd.read_parquet('/clean_items.parquet.gzip')
+df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
 
 app = FastAPI()
 
