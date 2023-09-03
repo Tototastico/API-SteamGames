@@ -54,7 +54,7 @@ def countreviews(fecha_inicio:str, fecha_fin:str):
 
 @app.get('/genre/{genero}')
 def genre(genero: str): # Esta funcion es a que mas se demora
-    df_games = pd.read_parquet('clean_games.parquet.gzip')
+    df_games = pd.read_parquet('clean_games_genreFunction.parquet.gzip')
     df_items = pd.read_parquet('clean_items_genreFunction.parquet.gzip')
     #def genre( género : str ): Devuelve el puesto en el que se encuentra un género
     #sobre el ranking de los mismos analizado bajo la columna PlayTimeForever.
