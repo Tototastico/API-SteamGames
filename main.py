@@ -1,6 +1,7 @@
 from fastapi import FastAPI # Imporamos nuestro constructor de apis, FastAPI
 import pandas as pd
 import numpy as np
+import functions as fn
 from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
 #from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
 
@@ -34,6 +35,10 @@ def userdata(User_id: str):
                                                     #Sin importar si eran positivas o negativas
     percentage = user_recomendations/len(total_games) # Creamos nuestro porcentaje de recomendaciones
     return f'{total_amount}, {round(percentage*100,2)}%' # Y lo retornamos
+
+@app.get('/userdata2/{User_id}')
+def userdata2(User_id: str):
+    return fn.userdata(User_id=User_id)
 
 @app.get('/countreviews/{fecha_inicio},{fecha_fin}') # Aca separamos nuestros parametros en la ruta con una ','
 def countreviews(fecha_inicio:str, fecha_fin:str):
