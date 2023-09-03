@@ -11,13 +11,30 @@ app = FastAPI() # Instanciamos nuestra api
 # Ademas de crear las funciones aca mismo, previamente habian sido creadas en un archivo funciones.ipynb
 # Pero decidi moverlas directamente aca en vez de importarlas.
 
+df_reviews = pd.read_parquet('clean_reviews_functions.parquet.gzip')
+df_games = pd.read_parquet('clean_games_functions.parquet.gzip')
+df_items = pd.read_parquet('clean_items_functions.parquet.gzip')
+
 @app.get('/userdata/{User_id}')
-def userdata(User_id: str):
-    return fn.userdata(User_id=User_id)
+def userdata(User_id: int):
+    User_id = str(User_id)
+    user_games = df_items[df_items['user_id'] == User_id]['item_id']
+    user_games = user_games.tolist()
+    total_amount = 0.0
+    for game in user_games:
+        price_data = df_games.loc[df_games['id'] == game, 'price']
+        if not price_data.empty:
+            price = price_data.values[0]
+            total_amount += float(price)
+    total_amount = round(total_amount,2)
+    total_games = df_items.loc[df_items['user_id'] == User_id, 'items_count'].tolist()[0]
+    user_recomendations = df_reviews[df_reviews['user_id'] == User_id]['recommend'].tolist()
+    user_recomendations = sum(user_recomendations)
+    percentage = user_recomendations/total_games
+    return [total_amount, f'{round(percentage*100,2)}%']
 
 @app.get('/countreviews/{fecha_inicio},{fecha_fin}') # Aca separamos nuestros parametros en la ruta con una ','
 def countreviews(fecha_inicio:str, fecha_fin:str):
-    df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def countreviews( YYYY-MM-DD y YYYY-MM-DD : str ): Cantidad de usuarios que realizaron reviews entre las fechas dadas
     #y, el porcentaje de recomendación de los mismos en base a reviews.recommend.
     users = df_reviews[(df_reviews['posted'] >= fecha_inicio) &
@@ -34,8 +51,6 @@ def countreviews(fecha_inicio:str, fecha_fin:str):
 
 @app.get('/genre/{genero}')
 def genre(genero: str): # Esta funcion es a que mas se demora
-    df_games = pd.read_parquet('clean_games_genreFunction.parquet.gzip')
-    df_items = pd.read_parquet('clean_items_genreFunction.parquet.gzip')
     #def genre( género : str ): Devuelve el puesto en el que se encuentra un género
     #sobre el ranking de los mismos analizado bajo la columna PlayTimeForever.
     generos_unicos = df_games['genres'].unique() # Extraemos nuestros generos unicos
@@ -47,15 +62,9 @@ def genre(genero: str): # Esta funcion es a que mas se demora
     sumas_por_genero_ordenado = dict(sorted(sumas_por_genero.items(), key=lambda item: item[1], reverse=True)) # Creamos el ranking
     ranking = list(sumas_por_genero_ordenado.keys()).index(genero) + 1 # Conseguimos el puesto de nuestro genero
     return f'{genero} : {ranking}' # Retornamos
- 
-@app.get('/genre2/{genero}')
-def genre2(genero: str):
-    return fn.genre(genero=genero)
 
 @app.get('/userforgenre/{genero}')
 def userforgenre(genero: str):
-    df_games = pd.read_parquet('clean_games.parquet.gzip')
-    df_items = pd.read_parquet('clean_items.parquet.gzip')
     #def userforgenre( género : str ): Top 5 de usuarios con más horas de juego en el género dado,
     #con su URL (del user) y user_id.
     genre_hours = df_items.merge(df_games, left_on='item_id', right_on='id') # Unimos los datasets de items y juegos
@@ -70,7 +79,6 @@ def userforgenre(genero: str):
 
 @app.get('/developer/{company_name}', response_class=HTMLResponse)
 def developer(company_name: str):
-    df_games = pd.read_parquet('clean_games.parquet.gzip')
     #def developer( desarrollador : str ): Cantidad de items y porcentaje
     # de contenido Free por año según empresa desarrolladora.
     frees = df_games[(df_games.publisher == company_name) & ((df_games.price == 0) | df_games.price.isnull())].drop_duplicates(subset=['id'])
@@ -87,7 +95,6 @@ def developer(company_name: str):
 
 @app.get('/sentiment_analysis/{year}')
 def sentiment_analysis(year: str):
-    df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def sentiment_analysis( año : int ): Según el año de lanzamiento,
     #se devuelve una lista con la cantidad de registros de reseñas de usuarios
     # que se encuentren categorizados con un análisis de sentimiento.
@@ -99,7 +106,6 @@ def sentiment_analysis(year: str):
 
 @app.get('/recomendacion_juego/{id_de_producto}')
 def recomendacion_juego(id_del_producto: str):
-    df_games = pd.read_parquet('clean_games.parquet.gzip')
     #def recomendacion_juego( id de producto ): Ingresando el id de producto,
     # deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
     from recommendation import cosine_sim
