@@ -1,8 +1,8 @@
 from fastapi import FastAPI # Imporamos nuestro constructor de apis, FastAPI
 import pandas as pd
 import numpy as np
-from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
-from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
+#from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
+#from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
 
 # Procedemos a leer nuestros archivos ubicados al mismo nivel del main por problemas en el deploy
 df_games = pd.read_parquet('clean_games.parquet.gzip')
@@ -15,7 +15,7 @@ app = FastAPI() # Instanciamos nuestra api
 # Ademas de crear las funciones aca mismo, previamente habian sido creadas en un archivo funciones.ipynb
 # Pero decidi moverlas directamente aca en vez de importarlas.
 
-@app.get('/userdata/{User_id}', response_class=HTMLResponse) # Creamos nuestro marcador con la ruta del mismo nombre que la funcion
+@app.get('/userdata/{User_id}') # Creamos nuestro marcador con la ruta del mismo nombre que la funcion
 def userdata(User_id: str):
     #def userdata( User_id : str ): Debe devolver cantidad de dinero gastado por el usuario,
     #el porcentaje de recomendación en base a reviews.recommend y cantidad de items.
@@ -37,7 +37,7 @@ def userdata(User_id: str):
     percentage = user_recomendations/total_games # Creamos nuestro porcentaje de recomendaciones
     return f'{total_amount}, {round(percentage*100,2)}%' # Y lo retornamos
 
-@app.get('/countreviews/{fecha_inicio},{fecha_fin}', response_class=HTMLResponse) # Aca separamos nuestros parametros en la ruta con una ','
+@app.get('/countreviews/{fecha_inicio},{fecha_fin}') # Aca separamos nuestros parametros en la ruta con una ','
 def countreviews(fecha_inicio:str, fecha_fin:str):
     #def countreviews( YYYY-MM-DD y YYYY-MM-DD : str ): Cantidad de usuarios que realizaron reviews entre las fechas dadas
     #y, el porcentaje de recomendación de los mismos en base a reviews.recommend.
@@ -53,7 +53,7 @@ def countreviews(fecha_inicio:str, fecha_fin:str):
     percentage = pos/total_r # Hacemos el porcentaje
     return f'{len(users)}, {round(percentage,2)*100}%' # Y retornamos
 
-@app.get('/genre/{genero}', response_class=HTMLResponse)
+@app.get('/genre/{genero}')
 def genre(genero: str): # Esta funcion es a que mas se demora
     #def genre( género : str ): Devuelve el puesto en el que se encuentra un género
     #sobre el ranking de los mismos analizado bajo la columna PlayTimeForever.
@@ -67,7 +67,7 @@ def genre(genero: str): # Esta funcion es a que mas se demora
     ranking = list(sumas_por_genero_ordenado.keys()).index(genero) + 1 # Conseguimos el puesto de nuestro genero
     return f'{genero} : {ranking}' # Retornamos
  
-@app.get('/userforgenre/{genero}', response_class=HTMLResponse)
+@app.get('/userforgenre/{genero}')
 def userforgenre(genero: str):
     #def userforgenre( género : str ): Top 5 de usuarios con más horas de juego en el género dado,
     #con su URL (del user) y user_id.
@@ -81,7 +81,7 @@ def userforgenre(genero: str):
         top+=f'{user_info.user_id}, {total_hours}, {user_info.user_url}' # Y agregamos al resultado, el user, las horas y el url
     return top # Retornamos
 
-@app.get('/developer/{company_name}', response_class=HTMLResponse)
+@app.get('/developer/{company_name}')
 def developer(company_name: str):
     #def developer( desarrollador : str ): Cantidad de items y porcentaje
     # de contenido Free por año según empresa desarrolladora.
@@ -112,6 +112,7 @@ def sentiment_analysis(year: int):
 def recomendacion_juego(id_del_producto: str):
     #def recomendacion_juego( id de producto ): Ingresando el id de producto,
     # deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+    from recommendation import cosine_sim
     item_indice = df_games[df_games['id'] == id_del_producto].index[0] # Extraemos el indice de nuestro juego en nuestro dataset de juegos
     items_similares = list(enumerate(cosine_sim[item_indice])) # Conseguimos nuestros items similares
     recommended_items = sorted(items_similares, key=lambda x: x[1], reverse=True) # Ahora ordenamos para saber nuestros items mas recomendados
