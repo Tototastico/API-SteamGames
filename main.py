@@ -101,7 +101,8 @@ def developer(company_name: str):
     return answer # Retornamos
 
 @app.get('/sentiment_analysis/{year}')
-def sentiment_analysis(year: int):
+def sentiment_analysis(year: str):
+    year = int(year)
     df_reviews = pd.read_parquet('clean_reviews.parquet.gzip')
     #def sentiment_analysis( año : int ): Según el año de lanzamiento,
     #se devuelve una lista con la cantidad de registros de reseñas de usuarios
