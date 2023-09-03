@@ -1,7 +1,7 @@
 from fastapi import FastAPI # Imporamos nuestro constructor de apis, FastAPI
 import pandas as pd
 import numpy as np
-#from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
+from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
 #from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
 
 app = FastAPI() # Instanciamos nuestra api
@@ -83,7 +83,7 @@ def userforgenre(genero: str):
         top+=f'{user_info.user_id}, {total_hours}, {user_info.user_url}' # Y agregamos al resultado, el user, las horas y el url
     return top # Retornamos
 
-@app.get('/developer/{company_name}')
+@app.get('/developer/{company_name}', response_class=HTMLResponse)
 def developer(company_name: str):
     df_games = pd.read_parquet('clean_games.parquet.gzip')
     #def developer( desarrollador : str ): Cantidad de items y porcentaje
