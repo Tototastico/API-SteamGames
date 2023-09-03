@@ -75,7 +75,7 @@ def userforgenre(genero: str):
     top = '' # Este va a ser nuestro resultado
     for user_id, total_hours in top_users.items(): # Recorremos el top 5
         user_info = df_items[df_items['user_id'] == user_id].iloc[0] # Extraemos la informacion necesaria del usuario
-        top+=f'<p>{user_info.user_id}, {total_hours/60}, {user_info.user_url}</p>' # Y agregamos al resultado, el user, las horas y el url
+        top+=f'<p>{user_info.user_id}, {round(total_hours/60,2)}, {user_info.user_url}</p>' # Y agregamos al resultado, el user, las horas y el url
     return top # Retornamos
 
 @app.get('/developer/{company_name}', response_class=HTMLResponse)
