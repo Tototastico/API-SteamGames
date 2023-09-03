@@ -136,5 +136,5 @@ def sentiment_analysis2(year: str):
     df_sa = df_games.copy()
     year_data = df_sa[df_sa['year'] == year]
     mapeo = {0: 'Negative', 1: 'Neutral', 2: 'Positive'}
-    sentiment = anio_data['sentiment_analysis'].map(mapeo).value_counts().to_dict()
+    sentiment = df_games['sentiment_analysis'].map(mapeo).value_counts().to_dict()
     return sentiment
