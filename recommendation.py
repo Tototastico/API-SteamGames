@@ -25,7 +25,7 @@ import pickle
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-df_games = pd.read_parquet('clean_games.parquet.gzip')
+df_games = pd.read_parquet('src\data\clean_games.parquet.gzip')
 games = df_games
 
 generos_a_excluir = [
