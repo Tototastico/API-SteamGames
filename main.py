@@ -4,6 +4,7 @@ import numpy as np
 import functions as fn
 from fastapi.responses import HTMLResponse # Importamos este modulo que nos permite hacer los returns como codigo HTML
 #from recommendation import cosine_sim # De nuestro modelo de recomendacion (recommendation.py) importamos el coseno
+from recommendation import cosine_sim, games_model
 
 app = FastAPI() # Instanciamos nuestra api
 
@@ -110,14 +111,12 @@ def sentiment_analysis(year: str):
 def recomendacion_juego(id_del_producto: str):
     #def recomendacion_juego( id de producto ): Ingresando el id de producto,
     # deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
-    from recommendation import cosine_sim
-    df_games = pd.read_parquet('clean_games_functions.parquet.gzip')
-    item_indice = df_games[df_games['id'] == id_del_producto].index[0] # Extraemos el indice de nuestro juego en nuestro dataset de juegos
+    item_indice = games_model[games_model['id'] == id_del_producto].index[0] # Extraemos el indice de nuestro juego en nuestro dataset de juegos
     items_similares = list(enumerate(cosine_sim[item_indice])) # Conseguimos nuestros items similares
     recommended_items = sorted(items_similares, key=lambda x: x[1], reverse=True) # Ahora ordenamos para saber nuestros items mas recomendados
     indices = [index for index, _ in recommended_items[1:10]] # Extraemos los indices de los juegos
-    recommended_items = df_games.iloc[indices]['id'].tolist() # Convertimos a listas con nuestros ids, (podriamos poner nuestros app_name)
+    recommended_items = games_model.iloc[indices]['id'].tolist() # Convertimos a listas con nuestros ids, (podriamos poner nuestros app_name)
     recomedations = ""
     for i in recommended_items[:5]:
-        recomedations+=f'<p>{i}</p>'
+        recomedations+=f'<p>{games_model[games_model.id == i].app_name.tolist()[0]}</p>'
     return recomedations # Retornamos los primeros 5

@@ -5,7 +5,7 @@
 import pandas as pd 
 from sklearn.feature_extraction.text import CountVectorizer # Importamos nuestro CountVectorizer de sklearn
 from sklearn.metrics.pairwise import cosine_similarity # Y nuestro coseno de simil
-games = pd.read_parquet('clean_games_functions.parquet.gzip') # Leemos nuestros juegos
+games_model = pd.read_parquet('clean_games_model.parquet.gzip')
 
 generos_a_excluir = [ # Creamos una lista de los generos menos vistos en el dataset, esto lo hacemos para reducir el tamaño
                       # del dataset por motivos de rendimiento, aunque por el otro lado perdemos precision en nuestro modelo
@@ -30,13 +30,13 @@ generos_a_excluir = [ # Creamos una lista de los generos menos vistos en el data
  'Accounting']
 
 for i in generos_a_excluir:
-    games = games[games['genres'] != i] # Eliminamos los juegos que sean de esos generos
+    games_model = games_model[games_model['genres'] != i] # Eliminamos los juegos que sean de esos generos
 
 
-games.dropna(inplace=True) # Eliminamos valores faltantes
+games_model.dropna(inplace=True) # Eliminamos valores faltantes
 co = CountVectorizer(max_features=7000, stop_words='english') # Creamos nuestro contador de vectores con un maximo de 7000 regs
                                                               # Tambien aprovechamos y por las dudas, eliminamos nuestras stopwords
-vector = co.fit_transform(games['genres']).toarray() # Creamos nuestro vector, entrenandolo con nuestra principal variable predictora, generos
+vector = co.fit_transform(games_model['genres']).toarray() # Creamos nuestro vector, entrenandolo con nuestra principal variable predictora, generos
 co.get_feature_names_out() # Extraemos los nombres de los features
 cosine_sim = cosine_similarity(vector) # Y creamos nuestro coseno, cabe aclarar que hubo mucho tiempo de pruebas, ya que esta linea
                                        # No funciona con el dataset completo, ni en mi pc ni en Colab, reducido de 70mil x 70mil
