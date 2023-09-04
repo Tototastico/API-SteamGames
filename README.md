@@ -7,8 +7,7 @@ Este proyecto se enfoca en la creación de un sistema de recomendación de video
 ## Contenido del README
 
 - [Descripción del Problema](#descripción-del-problema)
-- [Requerimientos de Aprobación](#requerimientos-de-aprobación)
-- [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
+- [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-(EDA))
 - [Modelo de Aprendizaje Automático](#modelo-de-aprendizaje-automático)
 - [Implementación de la API](#implementación-de-la-api)
 - [Cómo Usar la API](#cómo-usar-la-api)
@@ -20,16 +19,16 @@ Este proyecto se enfoca en la creación de un sistema de recomendación de video
 
 Steam necesitaba un sistema de recomendación de videojuegos para sus usuarios. Los datos iniciales eran desafiantes, con datos crudos y falta de automatización en la actualización de nuevos productos. Como MLOps Engineer, tuvimos que realizar tareas de Data Engineering y crear un MVP para abordar este problema.
 
-## Requerimientos de Aprobación
-
 ### Transformaciones
 
 - Se ha realizado la lectura del dataset en el formato correcto.
-- Las columnas innecesarias se han eliminado para optimizar el rendimiento de la API y el entrenamiento del modelo.
+- Se ha realizado una exhaustiva transformacion de datos, limpieza, imputacion de datos faltantes
+mapeo de emojis, etc.
+- Las columnas y filas innecesarias se han eliminado para optimizar el rendimiento de la API y el entrenamiento del modelo.
 
 ### Feature Engineering
 
-- Se ha creado la columna 'sentiment_analysis' aplicando análisis de sentimiento con NLP.
+- Se ha creado la columna 'sentiment_analysis' aplicando análisis de sentimiento con NLP, (NLTK)
 - La columna 'sentiment_analysis' reemplaza la columna 'user_reviews.review' según lo especificado.
 
 ### Desarrollo de la API
@@ -45,17 +44,13 @@ Steam necesitaba un sistema de recomendación de videojuegos para sus usuarios. 
 ### Deployment
 
 - Se ha implementado el despliegue de la API, utilizando el rervicio de Render.
-
-### Análisis Exploratorio de Datos (EDA)
-
-- Se ha realizado un análisis exploratorio de datos para comprender las relaciones y patrones en el dataset.
+- Puedes utilizar la api desde aqui: >>https://mlops-deploy-lngj.onrender.com<<
 
 ### Modelo de Aprendizaje Automático
 
-Hemos implementado un sistema de recomendación de videojuegos utilizando el enfoque de [elegir uno de los dos]:
+E implementado un sistema de recomendación de videojuegos utilizando el enfoque de Item-Item:
 
 - **Ítem-Ítem**: Este sistema recomienda juegos similares a un juego dado.
-- **User-Ítem**: Este sistema recomienda juegos a un usuario basado en usuarios similares.
 
 ## Exploratory Data Analysis (EDA)
 
@@ -64,24 +59,7 @@ Se ha realizado un análisis exploratorio de datos para comprender mejor el data
 - Identificación de relaciones entre variables.
 - Identificación de outliers o anomalías.
 - Exploración de patrones interesantes.
-
-## Modelo de Aprendizaje Automático
-
-Hemos implementado un sistema de recomendación de videojuegos utilizando el enfoque de [elegir uno de los dos]:
-
-- **Ítem-Ítem**: Este sistema recomienda juegos similares a un juego dado.
-- **User-Ítem**: Este sistema recomienda juegos a un usuario basado en usuarios similares.
-
-## Implementación de la API
-
-La API se ha implementado utilizando el framework FastAPI y proporciona los siguientes endpoints:
-
-- `/userdata(User_id: str)`
-- `/countreviews(YYYY-MM-DD y YYYY-MM-DD: str)`
-- `/genre(género: str)`
-- `/userforgenre(género: str)`
-- `/developer(desarrollador: str)`
-- `/sentiment_analysis(año: int)`
+- Analisis de datos a traves del tiempo.
 
 ## Cómo Usar la API
 
@@ -89,7 +67,7 @@ La API se ha implementado utilizando el framework FastAPI y proporciona los sigu
 
 ## Video de Demostración
 
-Puedes ver una demostración de la API y el modelo de recomendación en funcionamiento en el siguiente enlace: [Enlace al Video](inserta_el_enlace_del_video_de_demostración)
+Puedes ver una demostración de la API y el modelo de recomendación en funcionamiento en el siguiente enlace: [Enlace al Video](link video)
 
 ## Repositorio
 
