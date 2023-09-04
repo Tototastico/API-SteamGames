@@ -107,7 +107,7 @@ def sentiment_analysis(year: str):
     sentiment_counts = year_data['sentiment_analysis'].map(sentiment_mapping).value_counts().to_dict() # Contamos esos sentimientos
     return f'<p>{sentiment_counts}</p>' # Y los retornamos
 
-@app.get('/recomendacion_juego/{id_de_producto}', response_class=HTMLResponse)
+@app.get('/recomendacion_juego/{id_del_producto}', response_class=HTMLResponse)
 def recomendacion_juego(id_del_producto: str):
     #def recomendacion_juego( id de producto ): Ingresando el id de producto,
     # deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
