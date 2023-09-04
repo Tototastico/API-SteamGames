@@ -64,7 +64,7 @@ def genre(genero: str): # Esta funcion es a que mas se demora
 
 @app.get('/userforgenre/{genero}', response_class=HTMLResponse)
 def userforgenre(genero: str):
-    df_games = pd.read_parquet(r'data\clean_games_functions.parquet.gzip')
+    df_games = pd.read_parquet(r'data/clean_games_functions.parquet.gzip')
     #def userforgenre( género : str ): Top 5 de usuarios con más horas de juego en el género dado,
     #con su URL (del user) y user_id.
     genre_hours = df_items.merge(df_games, left_on='item_id', right_on='id') # Unimos los datasets de items y juegos
@@ -79,7 +79,7 @@ def userforgenre(genero: str):
 
 @app.get('/developer/{company_name}', response_class=HTMLResponse)
 def developer(company_name: str):
-    df_games = pd.read_parquet(r'data\clean_games_functions.parquet.gzip')
+    df_games = pd.read_parquet(r'data/clean_games_functions.parquet.gzip')
     #def developer( desarrollador : str ): Cantidad de items y porcentaje
     # de contenido Free por año según empresa desarrolladora.
     frees = df_games[(df_games.publisher == company_name) & ((df_games.price == 0) | df_games.price.isnull())].drop_duplicates(subset=['id'])
