@@ -14,23 +14,26 @@ df_reviews = pd.read_parquet(r'data/clean_reviews.parquet.gzip')
 df_games = pd.read_parquet(r'data/clean_games.parquet.gzip')
 df_items = pd.read_parquet(r'data/clean_items_functions.parquet.gzip')
 
-@app.get('/userdata/{User_id}', response_class=HTMLResponse)
-def userdata(User_id: int):
-    User_id = str(User_id)
-    user_games = df_items[df_items['user_id'] == User_id]['item_id']
-    user_games = user_games.tolist()
-    total_amount = 0.0
-    for game in user_games:
-        price_data = df_games.loc[df_games['id'] == game, 'price']
-        if not price_data.empty:
-            price = price_data.values[0]
-            total_amount += float(price)
-    total_amount = round(total_amount,2)
-    total_games = df_items.loc[df_items['user_id'] == User_id, 'items_count'].tolist()[0]
-    user_recomendations = df_reviews[df_reviews['user_id'] == User_id]['recommend'].tolist()
-    user_recomendations = sum(user_recomendations)
-    percentage = user_recomendations/total_games
-    return f'<p>{total_amount} : {round(percentage*100,2)}%</p>'
+@app.get('/userdata/{User_id}', response_class=HTMLResponse) # Definimos nuestros returns como respuestas HTML
+def userdata(User_id: str):
+    user_games = df_items[df_items['user_id'] == User_id]['item_id'] # Extramemos los juegos de nuestro usuario
+    user_games = user_games.tolist() # Lo convertimos a lista
+    total_amount = 0.0 # Instanciamos un monto con un valor inicial de 0
+    for game in user_games: # Recorremos la lista generada de juegos de nuestro usuario
+        price_data = df_games.loc[df_games['id'] == game, 'price'] # Extraemos el precio de dicho juego
+        if not price_data.empty: # Y si el precio NO es vacio
+            price = price_data.values[0] # Extraemos el numero del precio
+            total_amount += float(price) # Y lo sumamos al monto total
+    total_amount = round(total_amount,2) # Redondeamos nuestro monto
+    total_games = df_items.loc[df_items['user_id'] == User_id, 'items_count'].tolist()[0] # Contamos la cantidad de juegos totales de nuestro usuario
+    user_recomendations = df_reviews[df_reviews['user_id'] == User_id]['recommend'].tolist() # Contamos la cantidad de recomendaciones totales de
+                                                                                             # nuestro usuario, sin importar si es True o False
+    user_recomendations = sum(user_recomendations) # Sumamos nuestras recomendaciones para extraer solamente las positivas ya que
+                                                    # las positivas estan instanciadas como 1 y las falsas como 0
+                                                    # Si interpretamos la consigna como que son el total de las recomendaciones sin importar el tipo
+                                                    # Entonces deberiamos poner len() en vez de sum()
+    percentage = user_recomendations/total_games # Creamos el porcentaje
+    return f'<p>{total_amount} : {round(percentage*100,2)}%</p>' # Retornamos nuestro resultado
 
 @app.get('/countreviews/{fecha_inicio},{fecha_fin}', response_class=HTMLResponse) # Aca separamos nuestros parametros en la ruta con una ','
 def countreviews(fecha_inicio:str, fecha_fin:str):
